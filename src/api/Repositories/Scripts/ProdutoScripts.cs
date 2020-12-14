@@ -44,6 +44,7 @@ namespace api.Repositories.Scripts
 
     public static string DELETE_INSUMO = @"
       Delete From Insumo Where ProdutoPrincipalId = @identificador";
+      
     public const string SELECT_PRODUTO_INSUMO_POR_IDENTIFICADOR = @"
           SELECT
             I.Identificador,
