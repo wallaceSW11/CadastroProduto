@@ -53,5 +53,16 @@ namespace api.Controllers
       return BadRequest(ModelState);
     }
 
+    [HttpDelete("{identificador}")]
+    public IActionResult Deletar([FromRoute] int identificador)
+    {
+      return Ok("Produto deletado com sucesso");
+    }
+
+
+
+
+
+
   }
 }
