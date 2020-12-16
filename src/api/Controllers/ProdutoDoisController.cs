@@ -56,7 +56,7 @@ namespace api.Controllers
     [HttpDelete("{identificador}")]
     public IActionResult Deletar([FromRoute] int identificador)
     {
-      return Ok("Produto deletado com sucesso");
+      return Ok("Método ainda não implementado.");
     }
 
 
