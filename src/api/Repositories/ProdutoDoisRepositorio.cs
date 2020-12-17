@@ -55,8 +55,12 @@ namespace api.Repositories
           {
             insumo.IdentificadorProdutoPrincipal = idNovo;
           }
+
           _connection.Execute(ProdutoScripts.INSERT_INSUMO, produto.Insumos);
         }
+
+
+        _connection.Execute(ProdutoScripts.INSERT_CUSTO_REPOSICAO, produto.CustoReposicao);
 
         return idNovo;
       }

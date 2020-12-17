@@ -44,20 +44,20 @@ namespace api.Repositories.Scripts
 
     public static string DELETE_INSUMO = @"
       Delete From Insumo Where ProdutoPrincipalId = @identificador";
-      
+
     public const string SELECT_PRODUTO_INSUMO_POR_IDENTIFICADOR = @"
           SELECT
             I.Identificador,
-            I.ProdutoPrincipalId as IdentificadorProdutoPrincipal,
-            I.ProdutoInsumoId as IdentificadorProdutoInsumo,
+            I.IdentificadorProdutoPrincipal,
+            I.IdentificadorProdutoInsumo,
             P.Descricao,
             I.Quantidade,
             I.Valor,
             I.ValorTotal
           FROM
-            Insumo I Inner Join Produto P on (P.Identificador = I.ProdutoInsumoId)
+            Insumo I Inner Join Produto P on (P.Identificador = I.IdentificadorProdutoInsumo)
           WHERE
-            I.ProdutoPrincipalId = @identificador";
+            I.IdentificadorProdutoPrincipal = @identificador";
 
     public const string UPDATE_PRODUTO = @"
       UPDATE
@@ -69,7 +69,56 @@ namespace api.Repositories.Scripts
       WHERE
         Identificador = @identificador";
 
+    public const string INSERT_CUSTO_REPOSICAO = @"
+      INSERT INTO
+        CustoReposicaoProduto
+      Values (
+        @IdentificadorProduto,
+        @DataCompra,
+        @UnidadeCompra,
+        @QuantidadeEmbalagem,
+        @ValorCompra,
+        @ValorFrete,
+        @ValorAcrescimo,
+        @ValorDesconto,
+        @ValorCustoReposicao,
+        @ValorCustoReposicaoUnitario)";
 
+    public const string SELECT_TOP1_CUSTO_REPOSICAO = @"
+      SELECT TOP(1)
+        Identificador,
+        IdentificadorProduto,
+        DataCompra,
+        UnidadeCompra,
+        QuantidadeEmbalagem,
+        ValorCompra,
+        ValorFrete,
+        ValorAcrescimo,
+        ValorDesconto,
+        ValorCustoReposicao,
+        ValorCustoReposicaoUnitario
+      FROM
+        CustoReposicaoProduto
+      WHERE
+        (IdentificadorProduto = @identificador)";
+
+    public const string SELECT_CUSTO_REPOSICAO = @"
+      SELECT
+        Identificador,
+        IdentificadorProduto,
+        DataCompra,
+        UnidadeCompra,
+        QuantidadeEmbalagem,
+        ValorCompra,
+        ValorFrete,
+        ValorAcrescimo,
+        ValorDesconto,
+        ValorCustoReposicao,
+        ValorCustoReposicaoUnitario
+      FROM
+        CustoReposicaoProduto
+      WHERE
+        (IdentificadorProduto = @identificador)";
 
   }
 }

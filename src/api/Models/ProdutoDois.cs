@@ -18,5 +18,9 @@ namespace api.Models
 
     public IEnumerable<Insumo> Insumos { get; set; }
 
+    public IEnumerable<CustoReposicaoProduto> CustoReposicao { get; set; }
+
+    public CustoMontagemProduto CustoMontagem { get; set; }
+
   }
 }
