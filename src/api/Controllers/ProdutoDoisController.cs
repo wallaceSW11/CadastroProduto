@@ -57,7 +57,7 @@ namespace api.Controllers
         return Ok(produtosAtualizados);
       }
 
-      return BadRequest(ModelState);
+      return BadRequest("Falha ao atualizar o produto." + ModelState);
     }
 
     [HttpDelete("{identificador}")]
