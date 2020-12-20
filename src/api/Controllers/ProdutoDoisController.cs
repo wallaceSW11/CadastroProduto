@@ -63,7 +63,7 @@ namespace api.Controllers
     [HttpDelete("{identificador}")]
     public IActionResult Deletar([FromRoute] int identificador)
     {
-      return Ok("Método ainda não implementado.");
+      return Ok("Desculpe, método ainda não implementado.");
     }
 
 
