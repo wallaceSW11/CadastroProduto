@@ -34,6 +34,13 @@ namespace api.Controllers
       {
         var idProdutoCadastrado = _repositorio.Criar(produto);
 
+        int resultado;
+
+        if (!int.TryParse(idProdutoCadastrado, out resultado))
+        {
+          return BadRequest("Falha no cadastro do produto. Mensagem original: " + idProdutoCadastrado);
+        }
+
         return Ok("Identificador: " + idProdutoCadastrado);
       }
 

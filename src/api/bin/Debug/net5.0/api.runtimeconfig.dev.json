@@ -2,8 +2,7 @@
   "runtimeOptions": {
     "additionalProbingPaths": [
       "C:\\Users\\Wallzin\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\Wallzin\\.nuget\\packages",
-      "C:\\Microsoft\\Xamarin\\NuGet"
+      "C:\\Users\\Wallzin\\.nuget\\packages"
     ]
   }
 }

@@ -7,6 +7,8 @@ using Microsoft.Data.SqlClient;
 using Dapper.Contrib;
 using api.Repositories.Scripts;
 using System.Collections.Generic;
+using System.Linq;
+using System.Transactions;
 
 namespace api.Repositories
 {
@@ -15,10 +17,13 @@ namespace api.Repositories
     private readonly IDbConnection _connection;
     private readonly InsumoRepositorio _InsumoRepositorio;
 
+    private readonly CustoReposicaoProdutoRepositorio _CustoReposicaoProdutoRepositorio;
+
     public ProdutoDoisRepositorio(DatabaseConnectionFactory factory)
     {
       _connection = factory.Create();
       _InsumoRepositorio = new InsumoRepositorio(factory);
+      _CustoReposicaoProdutoRepositorio = new CustoReposicaoProdutoRepositorio(factory);
     }
 
     public void Dispose()
@@ -35,77 +40,94 @@ namespace api.Repositories
     public ProdutoDois Obter(int identificador)
     {
       var produtoDois = _connection.QuerySingle<ProdutoDois>(ProdutoScripts.SELECT_PRODUTO_POR_IDENTIFICADOR, new { identificador });
+
       if (produtoDois.PossuiComposicao)
       {
         produtoDois.Insumos = _InsumoRepositorio.Obter(identificador);
       }
+
+      produtoDois.CustoReposicao = _CustoReposicaoProdutoRepositorio.Obter(identificador);
 
       return produtoDois;
     }
 
     public string Criar(ProdutoDois produto)
     {
-      try
+      using (var transaction = new TransactionScope())
       {
-        var idNovo = _connection.QuerySingle<string>(ProdutoScripts.INSERT_PRODUTO, produto);
-
-        if (produto.PossuiComposicao)
+        try
         {
-          foreach (Insumo insumo in produto.Insumos)
+
+          var identificadorProdutoCadastrado = _connection.QuerySingle<string>(ProdutoScripts.INSERT_PRODUTO, produto);
+
+          if (produto.PossuiComposicao)
           {
-            insumo.IdentificadorProdutoPrincipal = idNovo;
+            foreach (Insumo insumo in produto.Insumos)
+            {
+              insumo.IdentificadorProdutoPrincipal = identificadorProdutoCadastrado;
+            }
+
+            _connection.Execute(ProdutoScripts.INSERT_INSUMO, produto.Insumos);
           }
 
-          _connection.Execute(ProdutoScripts.INSERT_INSUMO, produto.Insumos);
+          foreach (CustoReposicaoProduto custoReposicaoItem in produto.CustoReposicao)
+          {
+            custoReposicaoItem.IdentificadorProduto = identificadorProdutoCadastrado;
+          }
+
+          _connection.Execute(ProdutoScripts.INSERT_CUSTO_REPOSICAO, produto.CustoReposicao);
+
+          transaction.Complete();
+
+          return identificadorProdutoCadastrado;
+
         }
-
-
-        _connection.Execute(ProdutoScripts.INSERT_CUSTO_REPOSICAO, produto.CustoReposicao);
-
-        return idNovo;
-      }
-      catch (SqlException ex)
-      {
-        return ex.Message;
+        catch (SqlException ex)
+        {
+          return ex.Message;
+        }
       }
     }
 
     public string Atualizar(ProdutoDois produto)
     {
-      try
+      using (TransactionScope transaction = new TransactionScope())
       {
-        var produtosAtualizados = _connection
-          .Execute(
-            ProdutoScripts.UPDATE_PRODUTO,
-            new
-            {
-              identificador = produto.Identificador,
-              descricao = produto.Descricao,
-              valorVenda = produto.ValorVenda,
-              possuiComposicao = produto.PossuiComposicao
-            });
 
-        if (produto.PossuiComposicao)
+        try
         {
-          _connection.Execute(ProdutoScripts.DELETE_INSUMO, new { identificador = produto.Identificador });
+          var produtosAtualizados = _connection
+            .Execute(
+              ProdutoScripts.UPDATE_PRODUTO,
+              new
+              {
+                identificador = produto.Identificador,
+                descricao = produto.Descricao,
+                valorVenda = produto.ValorVenda,
+                tempoMontagem = produto.TempoMontagem,
+                valorCustoMontagem = produto.ValorCustoMontagem,
+                valorTotalCustoMontagem = produto.ValorTotalCustoMontagem,
+                possuiComposicao = produto.PossuiComposicao
+              });
 
-          // foreach (Insumo insumo in produto.Insumos)
-          // {
-          //   insumo.IdentificadorProdutoPrincipal = produto.Identificador;
-          // }
-          _connection.Execute(ProdutoScripts.INSERT_INSUMO, produto.Insumos);
+          if (produto.PossuiComposicao)
+          {
+            _connection.Execute(ProdutoScripts.DELETE_INSUMO, new { identificador = produto.Identificador });
+            _connection.Execute(ProdutoScripts.INSERT_INSUMO, produto.Insumos);
+          }
+
+          if (produtosAtualizados > 0)
+          {
+            transaction.Complete();
+            return "Produto atualizado com sucesso.";
+          }
+
+          return "Nenhum produto foi localizado com o identificador informado.";
         }
-
-        if (produtosAtualizados > 0)
+        catch (SqlException ex)
         {
-          return "Produto atualizado com sucesso.";
+          return ex.Message;
         }
-
-        return "Nenhum produto foi localizado com o identificador informado.";
-      }
-      catch (SqlException ex)
-      {
-        return ex.Message;
       }
     }
 

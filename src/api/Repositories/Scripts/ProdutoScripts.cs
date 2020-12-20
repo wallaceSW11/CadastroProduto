@@ -16,18 +16,23 @@ namespace api.Repositories.Scripts
             Identificador,
             Descricao,
             ValorVenda,
+            TempoMontagem,
+            ValorCustoMontagem,
+            ValorTotalCustoMontagem,
             PossuiComposicao
           FROM
             Produto (NoLock)
           WHERE
             Identificador = @identificador";
-
     public static string INSERT_PRODUTO = @"
       Insert into
         Produto 
         Values (
           @Descricao,
           @ValorVenda,
+          @TempoMontagem,
+          @ValorCustoMontagem,
+          @ValorTotalCustoMontagem,
           @PossuiComposicao
        );
        Select Cast(SCOPE_IDENTITY() as varchar)";
@@ -40,7 +45,8 @@ namespace api.Repositories.Scripts
           @IdentificadorProdutoInsumo,
           @Quantidade,
           @Valor,
-          @ValorTotal)";
+          @ValorTotal
+        )";
 
     public static string DELETE_INSUMO = @"
       Delete From Insumo Where ProdutoPrincipalId = @identificador";
@@ -65,6 +71,9 @@ namespace api.Repositories.Scripts
       SET
         Descricao = @descricao,
         ValorVenda = @valorVenda,
+        TempoMontagem = @TempoMontagem,
+        ValorCustoMontagem = @ValorCustoMontagem,
+        ValorTotalCustoMontagem = @ValorTotalCustoMontagem,
         PossuiComposicao = @possuiComposicao
       WHERE
         Identificador = @identificador";
@@ -82,27 +91,11 @@ namespace api.Repositories.Scripts
         @ValorAcrescimo,
         @ValorDesconto,
         @ValorCustoReposicao,
-        @ValorCustoReposicaoUnitario)";
+        @ValorCustoReposicaoUnitario,
+        @EmUso
+      )";
 
-    public const string SELECT_TOP1_CUSTO_REPOSICAO = @"
-      SELECT TOP(1)
-        Identificador,
-        IdentificadorProduto,
-        DataCompra,
-        UnidadeCompra,
-        QuantidadeEmbalagem,
-        ValorCompra,
-        ValorFrete,
-        ValorAcrescimo,
-        ValorDesconto,
-        ValorCustoReposicao,
-        ValorCustoReposicaoUnitario
-      FROM
-        CustoReposicaoProduto
-      WHERE
-        (IdentificadorProduto = @identificador)";
-
-    public const string SELECT_CUSTO_REPOSICAO = @"
+    public const string SELECT_CUSTO_REPOSICAO_POR_IDENTIFICADOR_PRODUTO = @"
       SELECT
         Identificador,
         IdentificadorProduto,
@@ -114,11 +107,14 @@ namespace api.Repositories.Scripts
         ValorAcrescimo,
         ValorDesconto,
         ValorCustoReposicao,
-        ValorCustoReposicaoUnitario
+        ValorCustoReposicaoUnitario,
+        EmUso
       FROM
         CustoReposicaoProduto
       WHERE
         (IdentificadorProduto = @identificador)";
+
+
 
   }
 }

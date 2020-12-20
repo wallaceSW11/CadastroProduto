@@ -14,13 +14,19 @@ namespace api.Models
     [Required(ErrorMessage = "Por favor, informe o valor de venda do produto")]
     public decimal ValorVenda { get; set; }
 
+    public int TempoMontagem { get; set; }
+
+    public float ValorCustoMontagem { get; set; }
+
+    public float ValorTotalCustoMontagem { get; set; }
+
     public bool PossuiComposicao { get; set; }
 
     public IEnumerable<Insumo> Insumos { get; set; }
 
     public IEnumerable<CustoReposicaoProduto> CustoReposicao { get; set; }
 
-    public CustoMontagemProduto CustoMontagem { get; set; }
+
 
   }
 }
