@@ -27,6 +27,13 @@ namespace api.Controllers
       return _repositorio.Obter(identificador);
     }
 
+
+    [HttpGet("/custoreposicao")]
+    public float ObterCustoReposicao([FromRoute] int identificador)
+    {
+      return 1;  //_repositorio.Obter(identificador);
+    }
+
     [HttpPost()]
     public IActionResult Criar([FromBody] ProdutoDois produto)
     {
