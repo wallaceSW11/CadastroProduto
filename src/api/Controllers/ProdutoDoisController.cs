@@ -3,6 +3,7 @@ using api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace api.Controllers
 {
@@ -28,10 +29,20 @@ namespace api.Controllers
     }
 
 
-    [HttpGet("/custoreposicao")]
-    public float ObterCustoReposicao([FromRoute] int identificador)
+    [HttpPost("/Calcular/CustoReposicao")]
+    public IActionResult ObterCustoReposicao([FromBody] CustoReposicao custoReposicao)
     {
-      return 1;  //_repositorio.Obter(identificador);
+      if (ModelState.IsValid)
+      {
+        CustoReposicao custoCalculado = new CustoReposicao(custoReposicao);
+
+        return Ok(custoCalculado);
+
+      }
+      else
+      {
+        return BadRequest(ModelState);
+      }
     }
 
     [HttpPost()]
