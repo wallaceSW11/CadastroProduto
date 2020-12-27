@@ -6,7 +6,7 @@ namespace api.Models
   public class CustoReposicaoProduto
   {
     [Key]
-    public string Identificador { get; set; }
+    public string Identificador { get; }
 
     public string IdentificadorProduto { get; set; }
 

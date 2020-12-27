@@ -7,7 +7,7 @@ namespace api.Models
   public class ProdutoDois
   {
     [Key]
-    public string Identificador { get; set; }
+    public string Identificador { get; }
     [Required(ErrorMessage = "Por favor, informe a descrição do produto")]
     public string Descricao { get; set; }
 

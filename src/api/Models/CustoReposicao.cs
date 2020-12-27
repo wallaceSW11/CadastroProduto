@@ -5,7 +5,7 @@ namespace api.Models
 {
   public class CustoReposicao
   {
-    [Range(1, Double.MaxValue, ErrorMessage = "Por favor, informe a quantidade, no mínimo 1.")]
+    [Range(0.01, Double.MaxValue, ErrorMessage = "Por favor, informe a quantidade, no mínimo 0,01.")]
     public double QuantidadeEmbalagem { get; set; }
 
     [Range(0.01, double.MaxValue, ErrorMessage = "Por favor, informe o valor de compra.")]
@@ -18,7 +18,7 @@ namespace api.Models
     public double ValorDesconto { get; set; }
 
     public double ValorCustoReposicao =>
-      Math.Round(this.QuantidadeEmbalagem / (ValorCompra + ValorFrete + ValorAcrescimo), 2);
+      (ValorCompra + ValorFrete + ValorAcrescimo) - ValorDesconto;
 
     public double ValorCustoReposicaoUnitario =>
       Math.Round(this.ValorCustoReposicao / this.QuantidadeEmbalagem, 2);

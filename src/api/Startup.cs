@@ -32,6 +32,7 @@ namespace api
       services.AddSingleton<DatabaseConnectionFactory>();
       services.AddSingleton<ProdutoRepositorio>();
       services.AddSingleton<ProdutoDoisRepositorio>();
+      services.AddSingleton<SalarioRepositorio>();
       services
           .AddControllers()
           .AddJsonOptions(options =>
