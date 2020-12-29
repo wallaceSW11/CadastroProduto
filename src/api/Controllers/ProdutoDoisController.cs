@@ -29,22 +29,6 @@ namespace api.Controllers
     }
 
 
-    [HttpPost("/Calcular/CustoReposicao")]
-    public IActionResult ObterCustoReposicao([FromBody] CustoReposicao custoReposicao)
-    {
-      if (ModelState.IsValid)
-      {
-        CustoReposicao custoCalculado = new CustoReposicao(custoReposicao);
-
-        return Ok(custoCalculado);
-
-      }
-      else
-      {
-        return BadRequest(ModelState);
-      }
-    }
-
     [HttpPost()]
     public IActionResult Criar([FromBody] ProdutoDois produto)
     {
@@ -85,7 +69,39 @@ namespace api.Controllers
     }
 
 
+    // Calculos \\
 
+    [HttpPost("/Calcular/CustoReposicao")]
+    public IActionResult ObterCustoReposicao([FromBody] CustoReposicao custoReposicao)
+    {
+      if (ModelState.IsValid)
+      {
+        CustoReposicao custoCalculado = new CustoReposicao(custoReposicao);
+
+        return Ok(custoCalculado);
+
+      }
+      else
+      {
+        return BadRequest(ModelState);
+      }
+    }
+
+    [HttpPost("/Calcular/Montagem")]
+    public IActionResult ObterValorTotalMontagem([FromBody] Montagem montagem)
+    {
+      if (ModelState.IsValid)
+      {
+        Montagem valorMontagem = new Montagem(montagem);
+
+        return Ok(valorMontagem);
+
+      }
+      else
+      {
+        return BadRequest(ModelState);
+      }
+    }
 
 
 
