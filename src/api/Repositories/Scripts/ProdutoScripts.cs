@@ -29,6 +29,9 @@ namespace api.Repositories.Scripts
         Produto 
         Values (
           @Descricao,
+          @ValorAcrescimoVenda,
+          @ValorDescontoVenda,
+          @PorcentagemMargemDeLucro,
           @ValorVenda,
           @TempoMontagem,
           @ValorCustoMontagem,
@@ -70,6 +73,9 @@ namespace api.Repositories.Scripts
         Produto
       SET
         Descricao = @descricao,
+        ValorAcrescimoVenda = @ValorAcrescimoVenda,
+        ValorDescontoVenda = @ValorDescontoVenda,
+        PorcentagemMargemDeLucro = @PorcentagemMargemDeLucro,
         ValorVenda = @valorVenda,
         TempoMontagem = @TempoMontagem,
         ValorCustoMontagem = @ValorCustoMontagem,
@@ -112,9 +118,7 @@ namespace api.Repositories.Scripts
       FROM
         CustoReposicaoProduto
       WHERE
-        (IdentificadorProduto = @identificador)";
-
-
-
+        (IdentificadorProduto = @identificador) and
+        (EmUso = 1)";
   }
 }

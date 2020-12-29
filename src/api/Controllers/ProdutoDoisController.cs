@@ -22,10 +22,18 @@ namespace api.Controllers
     {
       return _repositorio.Listar();
     }
+
     [HttpGet("{identificador}")]
-    public ProdutoDois Obter([FromRoute] int identificador)
+    public IActionResult Obter([FromRoute] int identificador)
     {
-      return _repositorio.Obter(identificador);
+      var produtoDetalhe = _repositorio.Obter(identificador);
+
+      if (produtoDetalhe == null)
+      {
+        return BadRequest("Produto não localizado.");
+      }
+
+      return Ok(produtoDetalhe);
     }
 
 
@@ -96,6 +104,21 @@ namespace api.Controllers
 
         return Ok(valorMontagem);
 
+      }
+      else
+      {
+        return BadRequest(ModelState);
+      }
+    }
+
+    [HttpPost("/Calcular/PrecoVenda")]
+    public IActionResult ObterValorPrecoVenda([FromBody] ProdutoDois produto)
+    {
+      if (ModelState.IsValid)
+      {
+        var precoVenda = new ProdutoDois(produto);
+
+        return Ok(precoVenda);
       }
       else
       {

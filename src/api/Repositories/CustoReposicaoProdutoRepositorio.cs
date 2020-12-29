@@ -21,13 +21,13 @@ namespace api.Repositories
     {
       _connection?.Dispose();
     }
-    public IEnumerable<CustoReposicaoProduto> Obter(int identificador)
+    public CustoReposicaoProduto Obter(int identificador)
     {
-      var custosReposicaoProduto = _connection.Query<CustoReposicaoProduto>(
+      var custosReposicaoProduto = _connection.QueryFirstOrDefault<CustoReposicaoProduto>(
           ProdutoScripts.SELECT_CUSTO_REPOSICAO_POR_IDENTIFICADOR_PRODUTO,
           new { identificador }
-      )
-      .ToList();
+      );
+
 
       return custosReposicaoProduto;
     }

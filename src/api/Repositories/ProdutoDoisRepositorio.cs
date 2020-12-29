@@ -39,7 +39,12 @@ namespace api.Repositories
 
     public ProdutoDois Obter(int identificador)
     {
-      var produtoDois = _connection.QuerySingle<ProdutoDois>(ProdutoScripts.SELECT_PRODUTO_POR_IDENTIFICADOR, new { identificador });
+      var produtoDois = _connection.QueryFirstOrDefault<ProdutoDois>(ProdutoScripts.SELECT_PRODUTO_POR_IDENTIFICADOR, new { identificador });
+
+      if (produtoDois == null)
+      {
+        return null;
+      }
 
       if (produtoDois.PossuiComposicao)
       {
@@ -70,12 +75,17 @@ namespace api.Repositories
             _connection.Execute(ProdutoScripts.INSERT_INSUMO, produto.Insumos);
           }
 
-          foreach (CustoReposicaoProduto custoReposicaoItem in produto.CustoReposicao)
-          {
-            custoReposicaoItem.IdentificadorProduto = identificadorProdutoCadastrado;
-          }
 
-          _connection.Execute(ProdutoScripts.INSERT_CUSTO_REPOSICAO, produto.CustoReposicao);
+          if (produto.CustoReposicao != null)
+          {
+            // foreach (CustoReposicaoProduto custoReposicaoItem in produto.CustoReposicao)
+            // {
+            produto.CustoReposicao.IdentificadorProduto = identificadorProdutoCadastrado;
+            // }
+
+            _connection.Execute(ProdutoScripts.INSERT_CUSTO_REPOSICAO, produto.CustoReposicao);
+
+          }
 
           transaction.Complete();
 
